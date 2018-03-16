@@ -1,0 +1,35 @@
+<html>
+<head>
+  <meta charset="utf-8" />
+</head>
+<body>
+  <h1>Premium Gallery of Photos</h1>
+  <p><i>"We have the best Photos"</i></p>
+  <div id="viewing-zone">
+    <!-- Image will go here -->
+  </div>
+  <ul>
+    <li onclick="view_photo('photo1')">Photo 1</li>
+    <li onclick="view_photo('photo2')">Photo 2</li>
+    <li onclick="view_photo('photo3')">Photo 3</li>
+  </ul>
+  <script src="/client.js"></script>
+  <script>
+    getMonetizationId('http://localhost:8080/pay/:id')
+      .then(id => {
+        window.monetizationId = id 
+      })
+
+    function view_photo (name) {
+      var zone = document.getElementById('viewing-zone')
+      var photo = document.createElement('img') 
+
+      photo.src = '/content/' + window.monetizationId + '/' + name
+      photo.width = 600
+
+      zone.innerHTML = ''
+      zone.appendChild(photo)
+    }
+  </script>
+</body>
+</html>
