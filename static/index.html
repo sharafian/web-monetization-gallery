@@ -1,19 +1,197 @@
 <html>
 <head>
   <meta charset="utf-8" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
+
+<style>
+  :root {
+    --jumbotron-padding-y: 3rem;
+  }
+
+  .jumbotron {
+    padding-top: var(--jumbotron-padding-y);
+    padding-bottom: var(--jumbotron-padding-y);
+    margin-bottom: 0;
+    background-color: #fff;
+  }
+  @media (min-width: 768px) {
+    .jumbotron {
+      padding-top: calc(var(--jumbotron-padding-y) * 2);
+      padding-bottom: calc(var(--jumbotron-padding-y) * 2);
+    }
+  }
+
+  .jumbotron p:last-child {
+    margin-bottom: 0;
+  }
+
+  .jumbotron-heading {
+    font-weight: 300;
+  }
+
+  .jumbotron .container {
+    max-width: 40rem;
+  }
+
+  footer {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  footer p {
+    margin-bottom: .25rem;
+  }
+
+  .box-shadow { box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }
+
+  /* The Modal (background) */
+  .modal {
+      display: none; /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1; /* Sit on top */
+      padding-top: 100px; /* Location of the box */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgb(0,0,0); /* Fallback color */
+      background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+  }
+
+  /* Modal Content (Image) */
+  .modal-content {
+      margin: auto;
+      display: block;
+      width: 80%;
+      max-width: 700px;
+  }
+
+  /* Add Animation - Zoom in the Modal */
+  .modal-content, #caption { 
+      animation-name: zoom;
+      animation-duration: 0.6s;
+  }
+
+  @keyframes zoom {
+      from {transform:scale(0)} 
+      to {transform:scale(1)}
+  }
+
+  /* The Close Button */
+  .close {
+      position: absolute;
+      top: 15px;
+      right: 35px;
+      color: #f1f1f1;
+      font-size: 40px;
+      font-weight: bold;
+      transition: 0.3s;
+  }
+
+  .close:hover,
+  .close:focus {
+      color: #bbb;
+      text-decoration: none;
+      cursor: pointer;
+  }
+
+  /* 100% Image Width on Smaller Screens */
+  @media only screen and (max-width: 700px){
+      .modal-content {
+          width: 100%;
+      }
+  }
+
+</style>
+
 <body>
-  <h1>Premium Gallery of Photos</h1>
-  <p><i>"We have the best Photos"</i></p>
-  <div id="viewing-zone">
-    <!-- Image will go here -->
+  <header>
+    <div class="navbar navbar-dark bg-dark box-shadow">
+      <div class="container d-flex justify-content-between">
+        <a href="#" class="navbar-brand d-flex align-items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+          <strong>Premium Gallery</strong>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div id="image-viewer" class="modal">
+    <span class="close" onclick="close_image()">&times;</span>
+    <img id="image-viewer-content" class="modal-content" />
   </div>
-  <ul>
-    <li onclick="view_photo('photo1')">Photo 1</li>
-    <li onclick="view_photo('photo2')">Photo 2</li>
-    <li onclick="view_photo('photo3')">Photo 3</li>
-    <li onclick="view_photo('screenshot')">Screenshot</li>
-  </ul>
+
+  <main>
+    <section class="jumbotron text-center">
+      <div class="container">
+        <h1 class="jumbotron-heading">Premium Photo Gallery</h1>
+        <!--<p class="lead text-muted">"We have the best photos"</p>-->
+        <p class="lead text-muted">This is a demo site to show off the capabilities of <a href="https://github.com/interledger/rfcs/blob/master/0028-web-monetization/0028-web-monetization.md">Web Monetization</a> and <a href="https://interledger.org">Interledger</a>. All of the images here are from <a href="https://unsplash.com/">Unsplash</a>.</p>
+        <p>
+          <a href="#photos" class="btn btn-primary my-2">Check it out</a>
+        </p>
+      </div>
+    </section>
+
+    <section class="album py-5 bg-light">
+      <a name="photos"></a>
+      <div class="container">
+        <div class="row">
+
+            <div class="col-md-4">
+              <div class="card mb-4 box-shadow">
+                <img class="card-img-top" src="/thumbnails/kelly.jpg">
+                <div class="card-body">
+                  <p class="card-text">It's pine needles. You'll love it. Premium stuff. You regular users are missing out. Photo by Kelly Sikkema on Unsplash</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                      <button type="button" onclick="view_photo('kelly')" class="btn btn-sm btn-outline-secondary">View</button>
+                    </div>
+                    <small class="text-success">$ Paid Content</small>
+                    <small class="text-muted">9 mins</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="card mb-4 box-shadow">
+                <img class="card-img-top" src="/thumbnails/adrian.jpg">
+                <div class="card-body">
+                  <p class="card-text">This one's a sweet landscape. For premium users only. Photo by adrian on Unsplash</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                      <button type="button" onclick="view_photo('adrian')" class="btn btn-sm btn-outline-secondary">View</button>
+                    </div>
+                    <small class="text-success">$ Paid Content</small>
+                    <small class="text-muted">9 mins</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="card mb-4 box-shadow">
+                <img class="card-img-top" src="/thumbnails/riccardo.jpg">
+                <div class="card-body">
+                  <p class="card-text">Here's a picture of a cabin, ya cheapskates. Photo by Riccardo Chiarini on Unsplash</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                      <button type="button" onclick="view_photo('riccardo', true)" class="btn btn-sm btn-outline-secondary">View</button>
+                    </div>
+                    <small class="text-muted">9 mins</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
   <script src="/client.js"></script>
   <script>
     getMonetizationId('http://localhost:8080/pay/:id')
@@ -21,15 +199,17 @@
         window.monetizationId = id 
       })
 
-    function view_photo (name) {
-      var zone = document.getElementById('viewing-zone')
-      var photo = document.createElement('img') 
+    function close_image () {
+      document.getElementById('image-viewer').style = 'display:none;'
+    }
 
-      photo.src = '/content/' + window.monetizationId + '/' + name
-      photo.width = 600
+    function view_photo (name, free) {
+      var viewer = document.getElementById('image-viewer')
+      var photo = document.getElementById('image-viewer-content')
 
-      zone.innerHTML = ''
-      zone.appendChild(photo)
+      viewer.style = 'display:block;'
+      photo.src = (free ? '/freecontent/' : '/content/') + window.monetizationId + '/' + name
+      console.log('viewing file', photo.src)
     }
   </script>
 </body>

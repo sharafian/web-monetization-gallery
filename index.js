@@ -17,7 +17,12 @@ router.get('/pay/:id', monetization.receiver())
 
 router.get('/content/:id/:file_name', monetization.paid({ price: 25, awaitBalance: true }), async ctx => {
   const sanitizedFile = ctx.params.file_name.replace(/[^a-zA-Z0-9]/g, '')
-  ctx.body = await fs.readFile(path.resolve(__dirname, 'res/' + sanitizedFile + '.png'))
+  ctx.body = await fs.readFile(path.resolve(__dirname, 'res/' + sanitizedFile + '.jpg'))
+})
+
+router.get('/freecontent/:id/:file_name', async ctx => {
+  const sanitizedFile = ctx.params.file_name.replace(/[^a-zA-Z0-9]/g, '')
+  ctx.body = await fs.readFile(path.resolve(__dirname, 'static/free/' + sanitizedFile + '.jpg'))
 })
 
 app
