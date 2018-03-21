@@ -195,7 +195,8 @@
 
   <script src="/client.js"></script>
   <script>
-    getMonetizationId('http://localhost:8080/pay/:id')
+    var domain = new URL(window.location).origin
+    getMonetizationId(domain + '/pay/:id')
       .then(id => {
         window.monetizationId = id 
       })
