@@ -10,7 +10,7 @@ const monetization = new KoaWebMonetization({ maxBalance: 25 })
 const fs = require('fs-extra')
 
 router.get('/client.js', async ctx => {
-  ctx.body = await fs.readFile(path.resolve(__dirname, 'node_modules/koa-web-monetization/client.js'))
+  ctx.body = await fs.readFile(path.resolve(path.dirname(require.resolve('koa-web-monetization')), 'client.js'))
 })
 
 router.get('/pay/:id', monetization.receiver())
