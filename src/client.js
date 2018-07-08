@@ -98,6 +98,8 @@ window.ilpFetch = async function (url, _opts) {
 const domain = new URL(window.location).origin
 
 window.close_image = function close_image () {
+  document.getElementById('image-viewer-error').style = 'display:none;'
+  document.getElementById('image-viewer-not-registered').style = 'display:none;'
   document.getElementById('image-viewer-content').style = 'display:none;'
   document.getElementById('image-viewer').style = 'display:none;'
 }
@@ -105,17 +107,30 @@ window.close_image = function close_image () {
 window.view_photo = async function view_photo (name, free) {
   var viewer = document.getElementById('image-viewer')
   var photo = document.getElementById('image-viewer-content')
+  var unregistered = document.getElementById('image-viewer-not-registered')
+  var error = document.getElementById('image-viewer-error')
   var url = (free ? '/freecontent/' : '/content/') + name
-
   viewer.style = 'display:block;'
-  const res = await window.ilpFetch(url, {
-    maxPrice: '200'
-  })
 
-  const blob = await res.blob()
-  const dataUrl = URL.createObjectURL(blob)
+  try {
+    const res = await window.ilpFetch(url, {
+      maxPrice: '200'
+    })
 
-  photo.style = ''
-  photo.src = dataUrl
-  console.log('viewing file', url) 
+    const blob = await res.blob()
+    const dataUrl = URL.createObjectURL(blob)
+
+    photo.style = ''
+    photo.src = dataUrl
+    console.log('viewing file', url) 
+  } catch (e) {
+    if (e.name === 'NoHandlerRegisteredError') {
+      console.log('UNREGISTERED')
+      unregistered.style = ''      
+    } else {
+      console.log('ERROR', e)
+      error.style = ''
+      document.getElementById('image-viewer-error-message').innerText = e.message
+    }
+  }
 }
