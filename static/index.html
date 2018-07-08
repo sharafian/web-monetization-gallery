@@ -124,6 +124,22 @@
   <div id="image-viewer" class="modal">
     <span class="close" onclick="close_image()">&times;</span>
     <img id="image-viewer-content" style="display:none;" class="modal-content" />
+    <div id="image-viewer-paying" style="display:none;" class="modal-content">
+      <div class="card">
+        <div class="card-body d-flex flex-row justify-content-start">
+          <div class="p-3">
+            <img width="72" src="https://interledger.org/assets/ilp_logo.svg" />
+          </div>
+          <div style="width:100%">
+            <h4 class="card-title">Paying For Content</h4>
+            <p class="card-text" id="progress-text"></p>
+            <div class="progress">
+              <div id="progress" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div id="image-viewer-not-registered" style="display:none;" class="modal-content">
       <div class="card">
         <div class="card-body d-flex flex-row justify-content-start">

@@ -17,11 +17,19 @@ async function handleStreamRequest ({
   const [ destinationAccount, _sharedSecret ] = payParams
   debug('streaming via STREAM. destination=' + destinationAccount)
 
+  if (opts.progress) {
+    opts.progress('30', 'Initializing Interledger connection')
+  }
+
   const sharedSecret = Buffer.from(_sharedSecret, 'base64')
   const connection = await window.monetize.createIlpConnection({
     destinationAccount,
     sharedSecret
   })
+
+  if (opts.progress) {
+    opts.progress('70', 'Sending money over Interledger')
+  }
 
   const stream = connection.createStream()
   stream.setSendMax(opts.maxPrice)
@@ -35,6 +43,11 @@ async function handleStreamRequest ({
     // Wait for the stream 'end' event to be emitted so the stream can finish sending funds
     await new Promise(resolve => stream.once('end', resolve))
   }
+
+  if (opts.progress) {
+    opts.progress('100', 'Payment complete')
+  }
+
   result.price = stream.totalSent
   return result
 }
@@ -49,11 +62,19 @@ window.ilpFetch = async function (url, _opts) {
     (_opts.headers || {}),
     { 'Pay-Token': payTokenText })
 
+  if (_opts.progress) {
+    _opts.progress('10', 'Fetching payment details')
+  }
+
   // Make the request for the first time---if the endpoint is paid, this will
   // fail.
   log.info('attempting http request. url=' + url, 'opts=', _opts)
   const opts = Object.assign({}, _opts, { headers })
   const firstTry = await fetch(url, opts)
+
+  if (_opts.progress) {
+    _opts.progress('20', 'Processing payment details')
+  }
 
   // If the request succeeded, just return the result. Keep going if payment is
   // required.
@@ -98,6 +119,7 @@ window.ilpFetch = async function (url, _opts) {
 const domain = new URL(window.location).origin
 
 window.close_image = function close_image () {
+  document.getElementById('image-viewer-paying').style = 'display:none;'
   document.getElementById('image-viewer-error').style = 'display:none;'
   document.getElementById('image-viewer-not-registered').style = 'display:none;'
   document.getElementById('image-viewer-content').style = 'display:none;'
@@ -108,22 +130,40 @@ window.view_photo = async function view_photo (name, free) {
   var viewer = document.getElementById('image-viewer')
   var photo = document.getElementById('image-viewer-content')
   var unregistered = document.getElementById('image-viewer-not-registered')
+  var paying = document.getElementById('image-viewer-paying')
   var error = document.getElementById('image-viewer-error')
   var url = (free ? '/freecontent/' : '/content/') + name
   viewer.style = 'display:block;'
 
+  if (!free) {
+    paying.style = ''    
+  }
+
+  var progressBar = document.getElementById('progress')
+  var progressText = document.getElementById('progress-text')
+  function progress (n, text) {
+    progressBar.setAttribute('aria-valuenow', n)
+    progressBar.style = 'width: ' + String(n) + '%;'
+    progressText.innerText = text
+  }
+
+  progress('0', 'Connecting')
+
   try {
     const res = await window.ilpFetch(url, {
-      maxPrice: '200'
+      maxPrice: '200',
+      progress
     })
 
     const blob = await res.blob()
     const dataUrl = URL.createObjectURL(blob)
 
+    paying.style = 'display:none;'
     photo.style = ''
     photo.src = dataUrl
     console.log('viewing file', url) 
   } catch (e) {
+    paying.style = 'display:none;'
     if (e.name === 'NoHandlerRegisteredError') {
       console.log('UNREGISTERED')
       unregistered.style = ''      
