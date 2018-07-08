@@ -123,7 +123,28 @@
 
   <div id="image-viewer" class="modal">
     <span class="close" onclick="close_image()">&times;</span>
-    <img id="image-viewer-content" class="modal-content" />
+    <img id="image-viewer-content" style="display:none;" class="modal-content" />
+    <div id="image-viewer-not-registered" style="display:none;" class="modal-content">
+      <div class="card">
+        <div class="card-body d-flex flex-row justify-content-start">
+          <div class="p-3">
+            <img width="72" src="https://interledger.org/assets/ilp_logo.svg" />
+          </div>
+          <div class="p-3">
+            <h4 class="card-title">Paid Content</h4>
+            <p class="card-text">This content requires payment with Web Monetization, but your browser doesn't have a provider. If you're looking for a Web Monetization provider, you can go to <a href="https://handler.webmonetization-test.com">Coil Demo</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="image-viewer-error" style="display:none;" class="modal-content">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title text-danger">Error</h4>
+          <p class="card-text text-danger">An error occurred during the payment process: <span id="image-viewer-error-message"></span></p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <main>
