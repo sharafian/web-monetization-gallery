@@ -2,6 +2,8 @@
 <head>
   <title>Premium Photo Gallery</title>
   <meta charset="utf-8" />
+  <script src="https://polyfill.webmonetization-test.com"></script>
+  <script src="/client.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 
@@ -192,27 +194,5 @@
       </div>
     </section>
   </main>
-
-  <script src="/client.js"></script>
-  <script>
-    var domain = new URL(window.location).origin
-    getMonetizationId(domain + '/pay/:id')
-      .then(id => {
-        window.monetizationId = id 
-      })
-
-    function close_image () {
-      document.getElementById('image-viewer').style = 'display:none;'
-    }
-
-    function view_photo (name, free) {
-      var viewer = document.getElementById('image-viewer')
-      var photo = document.getElementById('image-viewer-content')
-
-      viewer.style = 'display:block;'
-      photo.src = (free ? '/freecontent/' : '/content/') + window.monetizationId + '/' + name
-      console.log('viewing file', photo.src)
-    }
-  </script>
 </body>
 </html>

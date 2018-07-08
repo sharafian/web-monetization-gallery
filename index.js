@@ -4,23 +4,27 @@ const path = require('path')
 const serve = require('koa-static')(path.resolve(__dirname, 'static'))
 const app = new Koa()
 
-const KoaWebMonetization = require('koa-web-monetization')
-const monetization = new KoaWebMonetization({ maxBalance: 25 })
-
+const KoaCog = require('@sharafian/cog')
+const cog = new KoaCog()
 const fs = require('fs-extra')
 
 router.get('/client.js', async ctx => {
-  ctx.body = await fs.readFile(path.resolve(path.dirname(require.resolve('koa-web-monetization')), 'client.js'))
+  ctx.body = await fs.readFile(path.resolve(__dirname, 'dist', 'client.js'))
 })
 
-router.get('/pay/:id', monetization.receiver())
+router.get('/content/:file_name', cog.paid(), async ctx => {
+  try {
+    await ctx.ilpStream.receiveTotal('100')
+  } catch (e) {
+    ctx.throw(402, 'insufficient payment on request')
+    return
+  }
 
-router.get('/content/:id/:file_name', monetization.paid({ price: 25, awaitBalance: true }), async ctx => {
   const sanitizedFile = ctx.params.file_name.replace(/[^a-zA-Z0-9]/g, '')
   ctx.body = await fs.readFile(path.resolve(__dirname, 'res/' + sanitizedFile + '.jpg'))
 })
 
-router.get('/freecontent/:id/:file_name', async ctx => {
+router.get('/freecontent/:file_name', async ctx => {
   const sanitizedFile = ctx.params.file_name.replace(/[^a-zA-Z0-9]/g, '')
   ctx.body = await fs.readFile(path.resolve(__dirname, 'static/free/' + sanitizedFile + '.jpg'))
 })
