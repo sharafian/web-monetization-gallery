@@ -133,6 +133,7 @@ window.view_photo = async function view_photo (name, free) {
   var paying = document.getElementById('image-viewer-paying')
   var error = document.getElementById('image-viewer-error')
   var url = (free ? '/freecontent/' : '/content/') + name
+
   viewer.style = 'display:block;'
 
   if (!free) {
