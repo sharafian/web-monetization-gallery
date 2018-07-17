@@ -152,7 +152,7 @@ window.view_photo = async function view_photo (name, free) {
 
   try {
     const res = await window.ilpFetch(url, {
-      maxPrice: '200',
+      maxPrice: '200000000000',
       progress
     })
 
