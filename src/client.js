@@ -22,7 +22,7 @@ async function handleStreamRequest ({
   }
 
   const sharedSecret = Buffer.from(_sharedSecret, 'base64')
-  const connection = await window.monetize.createIlpConnection({
+  const connection = await window.WebMonetization.monetize({
     destinationAccount,
     sharedSecret
   })
@@ -34,14 +34,28 @@ async function handleStreamRequest ({
   const stream = connection.createStream()
   stream.setSendMax(opts.maxPrice)
 
-  await new Promise(resolve => stream.on('data', resolve))
+  await new Promise(resolve => {
+    function onData () {
+      stream.removeEventListener('data', onData)
+      resolve()
+    }
+
+    stream.addEventListener('data', onData)
+  })
 
   const result = await fetch(url, opts)
 
   if (stream.isOpen()) {
-    stream.end()
+    stream.close()
     // Wait for the stream 'end' event to be emitted so the stream can finish sending funds
-    await new Promise(resolve => stream.once('end', resolve))
+    await new Promise(resolve => {
+      function onClose () {
+        stream.removeEventListener('close', onClose)
+        resolve()
+      }
+
+      stream.addEventListener('close', onClose)
+    })
   }
 
   if (opts.progress) {
