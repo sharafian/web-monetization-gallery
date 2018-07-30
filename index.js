@@ -33,4 +33,4 @@ app
   .use(router.routes())
   .use(router.allowedMethods())
   .use(serve)
-  .listen(8085)
+  .listen(process.env.PORT || 8085)
